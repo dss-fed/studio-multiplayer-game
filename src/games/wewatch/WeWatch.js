@@ -1,6 +1,7 @@
 import GameComponent from "../../GameComponent.js";
 import React from "react";
-import YouTube from 'react-youtube';
+import YouTube from "react-youtube";
+import SocialUI from "./SocialUI.js";
 import "./wewatch.css";
 
 export default class WeWatch extends GameComponent {
@@ -17,21 +18,23 @@ export default class WeWatch extends GameComponent {
 
   render() {
     let opts = {
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
       playerVars: {
         autoplay: 1,
         controls: 0,
-        modestbranding: 1,
-      },
+        modestbranding: 1
+      }
     };
     return (
       <div className="wewatch">
+        <SocialUI />
         <YouTube
-            containerClassName="player"
-            videoId="fH3X2U9t2P0"
-            opts={opts}
-            onReady={(e) => this.onVideoReady(e)} />
+          containerClassName="player"
+          videoId="fH3X2U9t2P0"
+          opts={opts}
+          onReady={e => this.onVideoReady(e)}
+        />
       </div>
     );
   }

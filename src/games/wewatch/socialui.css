@@ -1,0 +1,13 @@
+.SocialUI {
+  width: 50%;
+  position: fixed;
+  right: 0px;
+  bottom: 0px;
+  background-color: red;
+  padding: 16px;
+  display: flex;
+}
+
+.SocialUI .AddVideo {
+  justify-content: right;
+}
