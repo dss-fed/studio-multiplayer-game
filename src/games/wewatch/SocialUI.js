@@ -13,6 +13,7 @@ export default class SocialUI extends React.Component {
   render() {
     return (
       <div className="SocialUI">
+        <div className="EventLog">{this.props.eventLog}</div>
         <button className="ShowAll" onClick={e => this.handleShowAll()}>
           Show All
         </button>

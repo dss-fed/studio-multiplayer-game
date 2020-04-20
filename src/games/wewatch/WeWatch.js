@@ -7,7 +7,11 @@ import "./wewatch.css";
 export default class WeWatch extends GameComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    let users = this.getSessionUserIds();
+    let userCount = users.length;
+    this.state = {
+      eventLog: ["Welcome! There are " + userCount + " users in the room"]
+    };
   }
 
   onVideoReady(e) {
@@ -28,7 +32,7 @@ export default class WeWatch extends GameComponent {
     };
     return (
       <div className="wewatch">
-        <SocialUI />
+        <SocialUI eventLog={this.state.eventLog} />
         <YouTube
           containerClassName="player"
           videoId="fH3X2U9t2P0"
