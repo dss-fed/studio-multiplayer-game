@@ -16,8 +16,37 @@ export default class WeWatch extends GameComponent {
 
   onVideoReady(e) {
     console.log("Video ready", e.target);
-    e.target.seekTo(0, true);
-    e.target.playVideo();
+    this.setState({ videoPlayer: e.target });
+  }
+
+  onVideoPlay(e) {
+    console.log("Pressed play", e.target);
+    this.getSessionDatabaseRef().set({
+      playing: true,
+      timestamp: e.target.getCurrentTime(),
+    });
+  }
+
+  onVideoPause(e) {
+    console.log("Pressed pause", e.target);
+    this.getSessionDatabaseRef().set({ playing: false });
+  }
+
+  onSessionDataChanged(data) {
+    if (this.state.videoPlayer) {
+      if (data.playing === true) {
+        // video should play (someone else pressed play)
+        console.log("Firebase change: video now playing");
+        this.state.videoPlayer.seekTo(data.timestamp, true);
+        this.state.videoPlayer.playVideo();
+      } else {
+        // video should pause (someone else pressed pause)
+        console.log("Firebase change: video now paused");
+        this.state.videoPlayer.pauseVideo();
+      }
+    } else {
+      console.log("Video player not ready yet");
+    }
   }
 
   render() {
@@ -25,7 +54,6 @@ export default class WeWatch extends GameComponent {
       width: "100%",
       height: "100%",
       playerVars: {
-        autoplay: 1,
         controls: 0,
         modestbranding: 1
       }
@@ -37,6 +65,8 @@ export default class WeWatch extends GameComponent {
           containerClassName="player"
           videoId="fH3X2U9t2P0"
           opts={opts}
+          onPlay={e => this.onVideoPlay(e)}
+          onPause={e => this.onVideoPause(e)}
           onReady={e => this.onVideoReady(e)}
         />
       </div>
