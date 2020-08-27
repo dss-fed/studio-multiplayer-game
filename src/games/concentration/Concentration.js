@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import Session from '../../Session.js';
 import UserApi from '../../UserApi.js';
 import firebase from 'firebase';
@@ -8,10 +8,43 @@ const numberOfCats = 8;
 const catApiKey = 'e7e0b9dd-9a5a-4061-bbf9-dd0b575e8945';
 const catApiUrl = `https://api.thecatapi.com/v1/images/search?limit=${numberOfCats}`;
 
+const initialState = {
+  cardsFlipped: [],
+  catData: null
+};
+
+const UPDATE_CAT_DATA = 'UPDATE_CAT_DATA';
+const FLIP_CARD = 'FLIP_CARD';
+const FLIP_BACK_CARDS = 'FLIP_BACK_CARDS';
+
+function reducer(state, action) {
+    switch (action.type) {
+        case UPDATE_CAT_DATA:
+                return {
+                ...state,
+                catData: action.payload
+                };
+        case FLIP_CARD:
+                const cardsFlipped = [...state.cardsFlipped];
+                cardsFlipped.push(action.payload);
+                return {
+                ...state,
+                cardsFlipped
+                };
+        case FLIP_BACK_CARDS:
+            return {
+                ...state,
+                cardsFlipped: []
+            };
+        default:
+          break;
+    }
+}
+
 export default function Concentration(props) {
   const session = new Session(props);
   const data = session.useSessionData();
-  const [catData, setCatData] = useState(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     const fetchOptions = {
@@ -22,25 +55,31 @@ export default function Concentration(props) {
 
     fetch(catApiUrl, fetchOptions).then((response) => {
       response.json().then((result) => {
-        console.log(result);
         const processedData = processCatData(result);
 
-        setCatData(processedData);
+        dispatch({
+            type: UPDATE_CAT_DATA,
+            payload: processedData
+        });
       });
     });
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        boxSizing: 'border-box'
+      }}
+    >
       <Grid
-        catData={catData}
+        catData={state.catData}
       />
     </div>
   );
 }
 
 function processCatData(data) {
-  const processedData = [];
+  const duplicatedData = [];
   const randomizedData = [];
 
   for (let i = 0; i < data.length; i++) {
@@ -48,7 +87,7 @@ function processCatData(data) {
       id: data[i].id,
       url: data[i].url
     }
-    processedData.push(datum);
+    duplicatedData.push(datum);
   }
 
   for (let i = 0; i < data.length; i++) {
@@ -56,12 +95,12 @@ function processCatData(data) {
       id: data[i].id,
       url: data[i].url
     }
-    processedData.push(datum);
+    duplicatedData.push(datum);
   }
 
-  while (processedData.length) {
-    const randomIndex = Math.floor(Math.random() * processedData.length);
-    const randomCat = processedData.splice(randomIndex, 1)[0];
+  while (duplicatedData.length) {
+    const randomIndex = Math.floor(Math.random() * duplicatedData.length);
+    const randomCat = duplicatedData.splice(randomIndex, 1)[0];
 
     randomizedData.push(randomCat);
   }
