@@ -21,6 +21,7 @@ import burst_Forth from "./games/Burst_Forth/burstForth.js";
 import fight from "./games/fight/fight.js";
 import pictionary from './games/pictionary/Pictionary.js';
 import uno from './games/uno/uno.js';
+import Concentration from './games/concentration/Concentration.js';
 
 const gameData = {
   chatroom: {
@@ -232,6 +233,15 @@ const gameData = {
     minUsers: 1,
     maxUsers: 1,
     component: DuckHunt,
+  },
+
+  concentration: {
+    title: "Concentration",
+    authors: "Emily, Michael, and Mike",
+    description: "Match the cards",
+    minUsers: 2,
+    maxUsers: 2,
+    component: Concentration,
   },
 };
 
