@@ -1,6 +1,5 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 import Row from './Row';
-import Card from './Card';
 
 export default function Grid(props) {
 
@@ -16,16 +15,28 @@ export default function Grid(props) {
             }}
         >
             <Row
+                cardsFlipped={props.cardsFlipped}
                 catData={getRowData(1, props.catData)}
+                dispatch={props.dispatch}
+                rowIndex={0}
             />
             <Row
+                cardsFlipped={props.cardsFlipped}
                 catData={getRowData(2, props.catData)}
+                dispatch={props.dispatch}
+                rowIndex={4}
             />
             <Row
+                cardsFlipped={props.cardsFlipped}
                 catData={getRowData(3, props.catData)}
+                dispatch={props.dispatch}
+                rowIndex={8}
             />
             <Row
+                cardsFlipped={props.cardsFlipped}
                 catData={getRowData(4, props.catData)}
+                dispatch={props.dispatch}
+                rowIndex={12}
             />
         </div>
     );

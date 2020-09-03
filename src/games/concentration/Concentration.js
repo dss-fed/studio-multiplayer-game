@@ -9,36 +9,54 @@ const catApiKey = 'e7e0b9dd-9a5a-4061-bbf9-dd0b575e8945';
 const catApiUrl = `https://api.thecatapi.com/v1/images/search?limit=${numberOfCats}`;
 
 const initialState = {
-  cardsFlipped: [],
-  catData: null
+    cardsFlipped: [],
+    catData: null
 };
 
 const UPDATE_CAT_DATA = 'UPDATE_CAT_DATA';
 const FLIP_CARD = 'FLIP_CARD';
-const FLIP_BACK_CARDS = 'FLIP_BACK_CARDS';
+const FLIP_CARD_BACK = 'FLIP_CARD_BACK';
 
 function reducer(state, action) {
+
+    let newState;
+
     switch (action.type) {
         case UPDATE_CAT_DATA:
-                return {
+            newState = {
                 ...state,
                 catData: action.payload
-                };
-        case FLIP_CARD:
-                const cardsFlipped = [...state.cardsFlipped];
-                cardsFlipped.push(action.payload);
-                return {
-                ...state,
-                cardsFlipped
-                };
-        case FLIP_BACK_CARDS:
-            return {
-                ...state,
-                cardsFlipped: []
             };
+            break;
+        case FLIP_CARD:
+            const cardsFlipped = [...state.cardsFlipped];
+            cardsFlipped.push(action.payload);
+            const catData = [...state.catData];
+            const catToFlip = catData.findIndex((cat, i) => i === action.payload);
+
+            catData[catToFlip].flipped = true;
+            newState = {
+                ...state,
+                cardsFlipped,
+                catData
+            };
+            break;
+        case FLIP_CARD_BACK:
+            newState = {
+                ...state,
+                cardsFlipped: state.cardsFlipped.filter(id => id !== action.payload)
+            };
+            break;
         default:
+            newState = {
+                ...state
+            }
           break;
     }
+
+    console.log(newState);
+
+    return newState;
 }
 
 export default function Concentration(props) {
@@ -67,13 +85,15 @@ export default function Concentration(props) {
 
   return (
     <div
-      style={{
-        boxSizing: 'border-box'
-      }}
+        style={{
+            boxSizing: 'border-box'
+        }}
     >
-      <Grid
-        catData={state.catData}
-      />
+        <Grid
+            cardsFlipped={state.cardsFlipped}
+            catData={state.catData}
+            dispatch={dispatch}
+        />
     </div>
   );
 }
@@ -85,7 +105,8 @@ function processCatData(data) {
   for (let i = 0; i < data.length; i++) {
     const datum = {
       id: data[i].id,
-      url: data[i].url
+      url: data[i].url,
+      flipped: false
     }
     duplicatedData.push(datum);
   }
@@ -93,7 +114,8 @@ function processCatData(data) {
   for (let i = 0; i < data.length; i++) {
     const datum = {
       id: data[i].id,
-      url: data[i].url
+      url: data[i].url,
+      flipped: false
     }
     duplicatedData.push(datum);
   }

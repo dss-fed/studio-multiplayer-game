@@ -18,28 +18,58 @@ const clickedStyle = {
 };
 
 export default function Card(props) {
-    const [face, setFace] = useState('/imgs/codenation-logo.png');
     const [style, setStyle] = useState(unclickedStyle);
 
     function handleClick() {
-        if (face === logo) {
-            setFace(whiteSquare);
+        if (props.cardsFlipped.length >= 2) {
+            return;
+        }
+
+        if (!props.flipped) {
             setTimeout(() => {
                 setStyle(clickedStyle);
-                setFace(props.src);
             }, 100)
+
+            props.dispatch({
+                type: 'FLIP_CARD',
+                payload: props.id
+            });
+
+            handleTwoCardsFlipped();
+
         } else {
             setStyle(unclickedStyle);
-            setFace(logo);
+
+            props.dispatch({
+                type: 'FLIP_CARD_BACK',
+                payload: props.id
+            });
         }
     }
 
+    function handleTwoCardsFlipped() {
+        // props.dispatch
+    }
+
+    if (props.flipped) {
+        return (
+            <div>
+                <img
+                    style={style}
+                    src={props.src}
+                    onClick={handleClick}
+                    alt={`cat ${props.id}`}
+                />
+            </div>
+        );
+    }
     return (
         <div>
             <img
                 style={style}
-                src={face}
+                src={logo}
                 onClick={handleClick}
+                alt={`cat ${props.id}`}
             />
         </div>
     );
